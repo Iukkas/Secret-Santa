@@ -287,3 +287,102 @@ button{
 .modal button:hover {
   background: #b91c1c;
 }
+
+.createContainer {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 30px;
+  color: white;
+}
+
+.createContainer h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.inputArea {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.inputArea input {
+  flex: 1;
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+}
+
+.inputArea button {
+  padding: 14px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #ff6b6b;
+  color: white;
+  font-weight: bold;
+}
+
+.participantsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.participantCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background: rgba(255,255,255,0.1);
+
+  padding: 15px;
+  border-radius: 12px;
+
+  backdrop-filter: blur(10px);
+}
+
+.participantCard button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.drawButton {
+  width: 100%;
+  margin-top: 30px;
+  padding: 15px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #4ecdc4;
+  color: white;
+
+  font-size: 18px;
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+.drawButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.resultsContainer {
+  margin-top: 30px;
+}
+
+.resultCard {
+  margin-top: 10px;
+  padding: 15px;
+
+  background: rgba(255,255,255,0.1);
+
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+}

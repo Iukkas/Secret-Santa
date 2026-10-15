@@ -1,6 +1,9 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
+  const navigate = useNavigate();
+
   return (
     <>
       <main className="hero">
@@ -28,7 +31,7 @@ function Home() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
         >
-          <button className="btnPrimary">
+          <button className="btnPrimary" onClick={() => navigate("/create")}>
             Criar Sorteio
           </button>
 

@@ -1,87 +1,97 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 function CreateDraw() {
-  const [participant, setParticipant] = useState("");
+  const [name, setName] = useState("");
   const [participants, setParticipants] = useState([]);
   const [results, setResults] = useState([]);
-  const [selectedPerson, setSelectedPerson] = useState(null);
 
-  function addParticipant() {
-    const name = participant.trim();
+  const addParticipant = () => {
+  const trimmedName = name.trim();
 
-    if (!name) return;
+  if (!trimmedName) return;
 
-    if (participants.includes(name)) {
-      alert("Esse participante já foi adicionado.");
-      return;
-    }
+  const alreadyExists = participants.some(
+    (participant) =>
+      participant.toLowerCase() ===
+      trimmedName.toLowerCase()
+  );
 
-    setParticipants([...participants, name]);
-    setParticipant("");
+  if (alreadyExists) {
+    alert("Este participante já foi adicionado.");
+    return;
   }
 
-  function removeParticipant(name) {
+  setParticipants([
+    ...participants,
+    trimmedName,
+  ]);
+
+  setResults([]);
+  setName("");
+};
+
+  const removeParticipant = (index) => {
     setParticipants(
-      participants.filter((p) => p !== name)
+      participants.filter((_, i) => i !== index)
     );
-  }
 
-  function shuffle(array) {
-    const newArray = [...array];
+    setResults([]);
+  };
 
-    for (let i = newArray.length - 1; i > 0; i--) {
-      const j = Math.floor(
-        Math.random() * (i + 1)
+  const performDraw = () => {
+    if (participants.length < 2) return;
+
+    let shuffled = [];
+    let validDraw = false;
+
+    while (!validDraw) {
+      shuffled = [...participants];
+
+      // Fisher-Yates Shuffle
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const random = Math.floor(
+          Math.random() * (i + 1)
+        );
+
+        [shuffled[i], shuffled[random]] = [
+          shuffled[random],
+          shuffled[i],
+        ];
+      }
+
+      // Garante que ninguém tire a si mesmo
+      validDraw = participants.every(
+        (participant, index) =>
+          participant !== shuffled[index]
       );
-
-      [newArray[i], newArray[j]] = [
-        newArray[j],
-        newArray[i],
-      ];
-    }
-
-    return newArray;
-  }
-
-  function generateDraw() {
-    if (participants.length < 2) {
-      alert("Adicione pelo menos 2 participantes.");
-      return;
-    }
-
-    let shuffled = shuffle(participants);
-
-    while (
-      shuffled.some(
-        (person, index) =>
-          person === participants[index]
-      )
-    ) {
-      shuffled = shuffle(participants);
     }
 
     const drawResults = participants.map(
-      (person, index) => ({
-        giver: person,
+      (participant, index) => ({
+        giver: participant,
         receiver: shuffled[index],
       })
     );
 
     setResults(drawResults);
-  }
+  };
 
   return (
-    <div className="createPage">
+    <div className="createContainer">
       <h1>Criar Sorteio 🎁</h1>
 
-      <div className="inputGroup">
+      <div className="inputArea">
         <input
           type="text"
           placeholder="Nome do participante"
-          value={participant}
-          onChange={(e) =>
-            setParticipant(e.target.value)
-          }
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              addParticipant();
+            }
+          }}
         />
 
         <button onClick={addParticipant}>
@@ -89,71 +99,51 @@ function CreateDraw() {
         </button>
       </div>
 
-      <div className="participantList">
-        {participants.map((person) => (
-          <div
+      <p>
+        Participantes: {participants.length}
+      </p>
+
+      <div className="participantsList">
+        {participants.map((person, index) => (
+          <motion.div
+            key={index}
             className="participantCard"
-            key={person}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
           >
             <span>{person}</span>
 
             <button
-              onClick={() =>
-                removeParticipant(person)
-              }
+              onClick={() => removeParticipant(index)}
             >
               ❌
             </button>
-          </div>
+          </motion.div>
         ))}
       </div>
 
       <button
         className="drawButton"
-        onClick={generateDraw}
+        disabled={participants.length < 2}
+        onClick={performDraw}
       >
-        🎲 Realizar Sorteio
+        Realizar Sorteio
       </button>
 
       {results.length > 0 && (
-        <div className="results">
-          <h2>🎁 Descubra seu Amigo Secreto</h2>
+        <div className="resultsContainer">
+          <h2>Resultado</h2>
 
-          <div className="revealList">
-            {results.map((result) => (
-              <button
-                key={result.giver}
-                className="personButton"
-                onClick={() =>
-                  setSelectedPerson(result)
-                }
-              >
-                {result.giver}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {selectedPerson && (
-        <div className="modalOverlay">
-          <div className="modal">
-            <h2>{selectedPerson.giver}</h2>
-
-            <p>Seu amigo secreto é:</p>
-
-            <h1>
-              🎁 {selectedPerson.receiver}
-            </h1>
-
-            <button
-              onClick={() =>
-                setSelectedPerson(null)
-              }
+          {results.map((result, index) => (
+            <div
+              key={index}
+              className="resultCard"
             >
-              Fechar
-            </button>
-          </div>
+              <strong>{result.giver}</strong>
+              {" → "}
+              {result.receiver}
+            </div>
+          ))}
         </div>
       )}
     </div>
