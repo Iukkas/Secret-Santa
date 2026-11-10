@@ -11,7 +11,8 @@ Aplicação web para realizar sorteios de amigo secreto de forma simples e intui
 
 **Backend as a Service (BaaS)**
   - Supabase
-  - Hospedagem
+
+**Hospedagem**
   - Vercel
 
 **✨ Funcionalidades**
